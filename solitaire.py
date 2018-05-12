@@ -25,11 +25,6 @@ class Field:
       self.max_stage.append(0)
       self.stage[0] = [self.name]
     else:
-      #cur_stage = self.get_stage()
-      #if cur_stage in self.stage.keys():
-      #  self.stage[cur_stage].append(name)
-      #else:
-      #  self.stage[cur_stage] = [name]
       self.set_stage(self.get_stage(), name)
     if self.get_stage() > self.max_stage[0]:
       self.max_stage[0] = self.get_stage()
@@ -91,10 +86,8 @@ class Field:
         if self.stones[(i,j)] == -1:
           if len(self.neighbours((i,j))) > 0:
             list_of_holes.append((i,j))
-    
     if len(list_of_holes) == 0:
       self.final = True
-      print("Final!!!", self.get_stage())
     else:
       self.final = False
     self.parent_of[self.name][1] = self.final
@@ -106,23 +99,19 @@ class Field:
     for h in self.hole_coords():
       for n, nn in self.neighbours(h):
         self.last_name[0] += 1
-        #self.children[self.last_name[0]] = {"hole": h, "neighbours": (n, nn), "final": None, "field": None}
         my_children[self.last_name[0]] = {"hole": h, "neighbours": (n, nn), "final": None, "field": None}
     
     return my_children
-        
+  
   def go_forward(self): 
     if len(self.children) == 0:
       my_children = self.create_children()
       if len(my_children) == 0:
         self.final = True
-        print("final!")
-      #parent = self.parent_of[self.name][0]
-      #self.fields[parent].children[self.name]["final"] = True
-      
-      if self.get_stage() == 30:
+      else:
+        self.final = False
+      if self.get_stage() == 31:
         print("Victory!!!!!!")
-      
       else:
         self.final = True
         for k in my_children.keys():
@@ -132,17 +121,9 @@ class Field:
             stones = cp.copy(self.stones)
             stones[h] = 1
             stones[n] = -1
-            stones[nn] = -1          
-            self.fields[k] = self.children[k] = Field(stones, name=k, parent=self.name)
-    
-  def go_back(self):
-    pass
+            stones[nn] = -1
+            self.fields[k] = self.children[k] = Field(stones, name=k, parent=self.name)      
       
-      
-      
-  '''
-  Needs work!!!!!!!!!
-  '''    
   def is_final(self): #a field is final if it has no children or all of its' children are final
     if not self.final:
       self.final = True
@@ -157,9 +138,8 @@ class Field:
     return 32-(sum(sum(self.stones))+33)//2
   
   def next_child(self):
-    for k in my_f.children.keys():
-      if not my_f.children[k].final:
-        my_f = my_f.children[k]
+    for k in self.children.keys():
+      if not self.children[k].final:
         return k
     return None
   
@@ -177,17 +157,42 @@ class Field:
   
 #=====================================================================================#
 
-f = Field.new((3,3))
-#f.next()
+f = Field.new((2,2))
 my_f = f;
-while my_f.get_stage() < 31:
+my_f.go_forward()
+my_f = my_f.fields[1]
+max_stage = 0
+stage = 0
+while stage < 28:
+  #print(my_f.get_stage(), my_f.name)
   my_f.go_forward()
   if my_f.is_final():
-    print("up ", my_f.name)
+    #print("up ", my_f.name)
     parent = my_f.parent_of[my_f.name][0]
-    print("parent: ", parent)
+    #print("parent: ", parent)
+    name = cp.copy(my_f.name)
     my_f = my_f.fields[parent]
-  for k in my_f.children.keys():
+    del(my_f.fields[name])
+    del(my_f.children[name])
+  
+  k = None
+  while k is None:
+    k = my_f.next_child()
+    if k is None:
+      parent = my_f.parent_of[my_f.name][0]
+      #print("parent: ", parent)
+      my_f = my_f.fields[parent]
+    else:
+      my_f = my_f.children[k]
+  
+  stage = my_f.get_stage()
+  if stage > max_stage:
+    max_stage = cp.copy(stage)
+    print(stage)
+    
+    
+'''
+#  for k in my_f.children.keys():
     if not my_f.children[k].final:
       my_f = my_f.children[k]
       print(my_f.name, k)
@@ -201,7 +206,7 @@ while my_f.get_stage() < 31:
       #my_f = my_f.fields[my_f.parent_of[my_f.name][0]]
       break
     
-
+'''
 
 '''
 all_final = False
