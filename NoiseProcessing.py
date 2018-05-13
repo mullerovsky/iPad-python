@@ -1,8 +1,12 @@
 # coding: utf-8
+'''
+I have no clue what this does. :-(
+'''
 import json
 import sqlite3
 conn = sqlite3.connect('data.db')
 c = conn.cursor()
+
 
 
 # Create table if it doesnt exist
