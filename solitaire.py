@@ -1,5 +1,7 @@
 import math
 import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
 import copy as cp
 
 class Field:
@@ -139,21 +141,40 @@ class Field:
   def next_child(self):
     for k in self.children.keys():
       if not self.children[k].final:
+        
         return k
+        
     return None
-
-  def next(self): #this generates all children at once - consumes all memory!!!! Bad!!!!
-    for h in self.hole_coords():
-      for n, nn in self.neighbours(h):
-        stones = cp.copy(self.stones)
-        stones[h] = 1
-        stones[n] = -1
-        stones[nn] = -1
-        self.last_name[0] += 1
-        self.fields.append(Field(stones, name=self.last_name[0], parent=self.name))
-        self.children.append(self.last_name[0])
-        #print("name: ", self.name, "last_name:", self.last_name[0])
-
+    
+  def up_and_free(self):
+    old_name = cp.copy(self.name)
+    parent_name = self.parent_of[old_name][0]
+    #print("parent: ", parent)
+    stage = self.fields[old_name].get_stage()
+    new_f = self.fields[parent_name]
+    del(new_f.children[old_name])    
+    del(new_f.fields[old_name])
+    del(new_f.parent_of[old_name])
+    i = new_f.stage[stage].index(old_name)
+    del(new_f.stage[stage][i])     
+       
+    return new_f  
+  
+  def plot_stones(self):
+    matplotlib.rcParams['axes.unicode_minus'] = False
+    fig, ax = plt.subplots()
+    for i, row in enumerate(self.stones):
+      for j, stone in enumerate(row):
+        if stone == 1:
+          ax.scatter(i, j, s=100, c="red")
+        elif stone == -1:
+          ax.scatter(i, j, s=100, c="lightgrey")          
+    ax.set_title('solitaire field')
+    ax.set_aspect(1.0)
+    plt.show()
+  
+  
+  
 #=====================================================================================#
 
 f = Field.new((2,2), name = 0)
@@ -163,28 +184,15 @@ my_f = my_f.fields[1]
 max_stage = 0
 stage = 0
 while stage < 31:
-  #print(my_f.get_stage(), my_f.name)
+  #my_f.plot_stones()
   my_f.go_forward()
   if my_f.is_final():
-    print("up ", my_f.name)
-    old_name = cp.copy(my_f.name)
-    parent = my_f.parent_of[my_f.name][0]
-    #print("parent: ", parent)
-    my_f = my_f.fields[parent]
-    del(my_f.fields[old_name])
-    del(my_f.children[old_name])
-
+    my_f.up_and_free()    
   k = None
   while k is None:
     k = my_f.next_child()
     if k is None:
-      print("up 2 ", my_f.name)
-      old_name = cp.copy(my_f.name)
-      parent = my_f.parent_of[my_f.name][0]
-      #print("parent: ", parent)
-      my_f = my_f.fields[parent]
-      del(my_f.fields[old_name])
-      del(my_f.children[old_name])    
+      my_f = my_f.up_and_free()
     else:
       my_f = my_f.children[k]
 
@@ -193,35 +201,3 @@ while stage < 31:
     max_stage = cp.copy(stage)
     print(stage)
 
-
-'''
-#  for k in my_f.children.keys():
-    if not my_f.children[k].final:
-      my_f = my_f.children[k]
-      print(my_f.name, k)
-      break
-    else:
-      print("else up ", my_f.name)
-      parent = my_f.parent_of[my_f.name][0]
-      print("parent: ", parent)
-      my_f = my_f.fields[parent]
-      my_f.final = True
-      #my_f = my_f.fields[my_f.parent_of[my_f.name][0]]
-      break
-
-'''
-
-'''
-all_final = False
-while not all_final:
-  parent_of = cp.copy(f.parent_of)[]
-  all_final = True
-  for n in parent_o f:
-    if f.parent_of[n][1] is None:
-      all_final = F alse
-      if n%1000 == 0:
-        print(n, f.fields[n].get_stage())
-      f.fields[n].next()
-
-print("Fertig!!!")
-'''
