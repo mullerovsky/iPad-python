@@ -141,9 +141,7 @@ class Field:
   def next_child(self):
     for k in self.children.keys():
       if not self.children[k].final:
-        
         return k
-        
     return None
     
   def up_and_free(self):
@@ -158,7 +156,18 @@ class Field:
     i = new_f.stage[stage].index(old_name)
     del(new_f.stage[stage][i])     
        
-    return new_f  
+    return new_f
+    
+  def field_comp(self,field):
+    my_stones = -cp.copy(field.stones)
+    for i in range(2):
+      for j in range(4):
+        if np.count_nonzero(self.stones - my_stones) == 0:
+          return True
+        my_stones = np.rot90(my_stones)
+      my_stones = np.fliplr(my_stones)
+ 
+    return False 
   
   def plot_stones(self):
     matplotlib.rcParams['axes.unicode_minus'] = False
@@ -172,22 +181,22 @@ class Field:
     ax.set_title('solitaire field')
     ax.set_aspect(1.0)
     plt.show()
+    plt.close()
   
   
   
 #=====================================================================================#
 
-f = Field.new((2,2), name = 0)
-my_f = f;
-my_f.go_forward()
-my_f = my_f.fields[1]
+my_f = Field.new((2,2), name = 0)
 max_stage = 0
 stage = 0
 while stage < 31:
-  #my_f.plot_stones()
+  if my_f.name%10000 == 0:
+    print(my_f.name)
+    print(my_f.stones)
   my_f.go_forward()
   if my_f.is_final():
-    my_f.up_and_free()    
+    my_f = my_f.up_and_free()    
   k = None
   while k is None:
     k = my_f.next_child()
