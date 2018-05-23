@@ -82,7 +82,7 @@ class Field:
           list_of_neighbours.append((n, nn))
 
     return list_of_neighbours
-  
+
   def hole_coords(self):  # returns a list of holes of a given field
     list_of_holes = []
     for i in range(len(self.stones)):
@@ -95,9 +95,9 @@ class Field:
     else:
       self.final = False
     self.parent_of[self.name][1] = self.final
-  
+
     return list_of_holes
-  
+
   def create_children(self):  # creates all children to a given field
     my_children = {}
     for h in self.hole_coords():
@@ -130,7 +130,7 @@ class Field:
             stones[n] = -1
             stones[nn] = -1
             self.fields[k] = self.children[k] =Field(stones, name=k, parent=self.name)
- 
+
   def is_final(self):  # a field is final if it has no children or all of its' children are final
     if not self.final:
       self.final = True
@@ -149,7 +149,7 @@ class Field:
       if not self.children[k].final:
         return k
     return None
-    
+
   def up_and_free(self):
     old_name = cp.copy(self.name)
     parent_name = self.parent_of[old_name][0]
@@ -161,9 +161,9 @@ class Field:
     del(new_f.parent_of[old_name])
     i = new_f.stage[stage].index(old_name)
     del(new_f.stage[stage][i])
-    
+
     return new_f
-    
+
   def field_comp(self, field):
     my_stones = -cp.copy(field.stones)
     for i in range(2):
@@ -172,9 +172,9 @@ class Field:
           return True
         my_stones = np.rot90(my_stones)
       my_stones = np.fliplr(my_stones)
- 
+
     return False
-  
+
   def plot_stones(self):
     matplotlib.rcParams['axes.unicode_minus'] = False
     fig, ax = plt.subplots()
@@ -188,8 +188,8 @@ class Field:
     ax.set_aspect(1.0)
     plt.show()
     plt.close()
-  
-  
+
+
 # ============================================================================#
 
 my_f = Field.new((2, 2), name=0)
@@ -214,4 +214,3 @@ while stage < 31:
   if stage > max_stage:
     max_stage = cp.copy(stage)
     print(stage)
-
