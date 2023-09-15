@@ -49,7 +49,7 @@ for s in mean_size:
 	n_b_tot = 0
 	for i in xrange(10000):
 		size = int(round(rnd.expovariate(1.0/s)))
-	 	size_tot += size
+		size_tot += size
 		if size > 0:
 			g, b = make_family(size, 0.8)
 			girls_tot += g
@@ -71,7 +71,7 @@ for s in mean_size:
 	mean_n_g.append(res_g)
 	mean_n_b.append(res_b)
 		
-	print "res g and b:", res_g, res_b
+	print("res g and b:", res_g, res_b)
 
 # do the plotting	
 plt.plot(mean_size,mean_n_b,'b', label="boys")
