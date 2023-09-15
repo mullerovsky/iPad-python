@@ -1,4 +1,4 @@
-import math
+#import math
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -6,7 +6,7 @@ import copy as cp
 
 
 class Field:
-  '''class to describe a solitaire field'''
+  """Class to describe a solitaire field."""
 
   # class variables, shared by all objects
   parent_of = {}  # name: [parent, final, stage]

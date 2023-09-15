@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 """
-Created on Fri Sep 12 11:19:21 2014
+Created on Fri Sep 12 11:19:21 2014.
 
 @author: thomas
 """
@@ -91,6 +91,7 @@ class RwHandles:
     def get_next_row(self):
         try: # try to read from current file
             row = self.reader.next()
+        # trunk-ignore(ruff/E722)
         except: # if fails read from next
             if self.next_read() & self.multiple_files:
                 row = self.reader.next()
@@ -177,7 +178,7 @@ def gen_ds_data(fname_in, multiple_files, level):
         # downsample every 3 * sample factor values to 3 values
         # the three downsampled values are max, min and medium value
         if line_num % (3*SF) == (3*SF - 1):
-            for i in xrange(3):
+            for i in range(3):
                 out_tab = []
                 # asuming we only have numerical data
                 for col in val_list.keys():
