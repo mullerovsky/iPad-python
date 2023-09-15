@@ -47,7 +47,7 @@ for s in mean_size:
 	boys_tot = 0
 	n_g_tot = 0
 	n_b_tot = 0
-	for i in xrange(10000):
+	for i in range(10000):
 		size = int(round(rnd.expovariate(1.0/s)))
 		size_tot += size
 		if size > 0:
